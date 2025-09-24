@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<!-- Start All Title Box -->
+<div class="all-title-box" xmlns="http://www.w3.org/1999/html">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2>Order summary</h2>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Shop</a></li>
+                        <li class="breadcrumb-item active">Checkout</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="container border border-1 shadow mt-5 py-4 w-75" >
+
+        <h1 class="text-center my-3"><b>{{user.username}}</b></h1>
+
+    {% for i in orders %}
+    {% for j in i.products.all %}
+    <div class="card mb-3 mt-4 mx-auto">
+  <div class="row">
+    <div class="col-4 px-4 pt-3">
+      <img src="{{ j.product.image.url }}"
+     width="100%;" height="180px"
+     class="rounded shadow">
+
+    </div>
+    <div class="col-8 ps-4 pt-2">
+      <div class="card-body">
+          <h1 class="card-text mb-3"><b>{{j.product.name}}</b></h1>
+          <h4 class="card-text mb-3">Price : ₹{{j.product.price}}</h4>
+          <h4 class="card-text mb-3">Quantity : {{j.quantity}}</h4>
+          <h4 class="card-text mb-3">Ordered : {{j.order.payment_method}}</h4>
+          <h4 class="card-text mb-3">Delivery Status : {% if j.order.delivery_status %} Delivered
+          {% else %} Not Delivered {% endif %}</h4>
+
+      </div>
+    </div>
+  </div>
+</div>
+            {% endfor %}
+    {% endfor %}
+</div>
+{% endblock %}
