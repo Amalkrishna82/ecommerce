@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.views import View
 from shop.models import Category
 from shop.forms import SignupForm,LoginForm
+from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 
 class CategoryView(View):
     def get(self,request):
@@ -14,6 +15,7 @@ class ProductView(View):
         c=Category.objects.get(id=i)
         context={'category':c}
         return  render(request,'product.html',context)
+
 from shop.models import Product
 class ProductDetail(View):
     def get(self,request,i):
@@ -65,7 +67,10 @@ class Userlogout(View):
 
 from shop.forms import CategoryForm
 
-class AddCategory(View):
+class AddCategory(LoginRequiredMixin,UserPassesTestMixin,View):
+    def test_func(self):
+        return self.request.user.is_superuser
+
     def get(self,request):
         form_instance=CategoryForm()
         return render(request,'addcategory.html',{'form':form_instance})
@@ -78,7 +83,7 @@ class AddCategory(View):
             return redirect('shop:categories')
 
 from shop.forms import ProductForm
-from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
+
 class AddProduct(LoginRequiredMixin,UserPassesTestMixin,View):
     def test_fuc(self):
         return self.request.user.is_superuser
@@ -96,7 +101,10 @@ class AddProduct(LoginRequiredMixin,UserPassesTestMixin,View):
 
 from shop.forms import StockForm
 
-class AddStock(View):
+class AddStock(LoginRequiredMixin,UserPassesTestMixin,View):
+    def test_func(self):
+        return self.request.user.is_superuser
+
     def get(self,request,i):
         p=Product.objects.get(id=i)
         form_instance=StockForm(instance=p)
